@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>volume</title>
+
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+    <script src="audiobox.js"></script>
+    <style>
+        #map { background-color: #eee; }
+        .row div { height: 200px; }
+    </style>
+  </head>
+  <body>
+  <div class="row">
+    <div class="col-md-4">
+      <button class="btn btn-primary" type="button" id="go">
+      <span class="glyphicon glyphicon-play"></span>
+      <span id="text">Play</span>
+      </button>
+    </div>
+    <div class="col-md-4">
+      <audio controls id="y-top"></audio>
+    </div>
+    <div class="col-md-4">
+      <p>X: <code id="x"></code></p>
+      <p>Y: <code id="y"></code></p>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-4">
+      <audio controls id="x-left"></audio>
+    </div>
+    <div class="col-md-4" id="map"></div>
+    <div class="col-md-4">
+      <audio controls id="x-right"></audio>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-4"></div>
+    <div class="col-md-4">
+      <audio controls id="y-bottom"></audio>
+    </div>
+    <div class="col-md-4"></div>
+  </div>
+
+    <script>
+      var map = document.getElementById("map");
+
+      var audios = {};
+
+      map.onmousemove = function(e) {
+        document.getElementById('x').innerHTML = e.offsetX;
+        document.getElementById('y').innerHTML = e.offsetY;
+
+        var x = e.offsetX / e.target.offsetWidth;
+        var y = e.offsetY / e.target.offsetHeight;
+
+        audios.x.left.setVolume(1 - x);
+        audios.x.right.setVolume(x);
+
+        audios.y.top.setVolume(1 - y);
+        audios.y.bottom.setVolume(y);
+         
+      }
+
+      var length = 11.92;
+
+      audios.x = {};
+      audios.y = {};
+      audios.x.left = new audioBox(document, "impetus.mp3", document.getElementById("x-left"), 1.97, length);
+      audios.x.right = new audioBox(document, "impetus.mp3", document.getElementById("x-right"), 97.95, length);
+      audios.y.top = new audioBox(document, "impetus.mp3", document.getElementById("y-top"), 13.97, length);
+      audios.y.bottom = new audioBox(document, "impetus.mp3", document.getElementById("y-bottom"), 38.0, length);
+
+      $("#go").click((e) => {
+        var $e = $(e.target).find("#text");
+        if($e.text() == "Play") {
+          audios.x.left.play();
+          audios.x.right.play();
+          audios.y.top.play();
+          audios.y.bottom.play();
+          $e.text("Stop");
+        } else {
+          audios.x.left.stop();
+          audios.x.right.stop();
+          audios.y.top.stop();
+          audios.y.bottom.stop();
+          $e.text("Play");
+        }
+      })
+    </script>
+  </body>
+</html>
