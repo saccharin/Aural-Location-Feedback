@@ -16,44 +16,45 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
     <script src="audiobox.js"></script>
+    <script src="audioBoxManager.js"></script>
     <style>
-        #map { background-color: #eee; }
+        #map { background-color: #eee; border: 1px solid #888; height: 400px; }
         .row div { height: 200px; }
     </style>
   </head>
   <body>
   <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-3">
       <button class="btn btn-primary" type="button" id="go">
-      <span class="glyphicon glyphicon-play"></span>
+      <span class="glyphicon glyphicon-play" id="icon"></span>
       <span id="text">Play</span>
       </button>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-6">
       <audio controls id="y-top"></audio>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-3">
       <p>X: <code id="x"></code></p>
       <p>Y: <code id="y"></code></p>
     </div>
   </div>
 
   <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-3">
       <audio controls id="x-left"></audio>
     </div>
-    <div class="col-md-4" id="map"></div>
-    <div class="col-md-4">
+    <div class="col-md-6" id="map"></div>
+    <div class="col-md-3">
       <audio controls id="x-right"></audio>
     </div>
   </div>
 
   <div class="row">
-    <div class="col-md-4"></div>
-    <div class="col-md-4">
+    <div class="col-md-3"></div>
+    <div class="col-md-6">
       <audio controls id="y-bottom"></audio>
     </div>
-    <div class="col-md-4"></div>
+    <div class="col-md-3"></div>
   </div>
 
     <script>
@@ -85,19 +86,19 @@
       audios.y.top = new audioBox(document, "impetus.mp3", document.getElementById("y-top"), 13.97, length);
       audios.y.bottom = new audioBox(document, "impetus.mp3", document.getElementById("y-bottom"), 38.0, length);
 
+      abm = new audioBoxManager([audios.x.left, audios.x.right, audios.y.top, audios.y.bottom]);
+
       $("#go").click((e) => {
         var $e = $(e.target).find("#text");
         if($e.text() == "Play") {
-          audios.x.left.play();
-          audios.x.right.play();
-          audios.y.top.play();
-          audios.y.bottom.play();
+          abm.play();
+          $(e.target).find("#icon").addClass("glyphicon-stop");
+          $(e.target).find("#icon").removeClass("glyphicon-play");
           $e.text("Stop");
         } else {
-          audios.x.left.stop();
-          audios.x.right.stop();
-          audios.y.top.stop();
-          audios.y.bottom.stop();
+          abm.stop();
+          $(e.target).find("#icon").removeClass("glyphicon-stop");
+          $(e.target).find("#icon").addClass("glyphicon-play");
           $e.text("Play");
         }
       })

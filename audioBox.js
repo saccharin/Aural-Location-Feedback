@@ -31,7 +31,7 @@ class audioBox {
 	play() {
 		this.element.play();
 	}
-	stop() {
+	pause() {
 		this.element.pause();
 	}
 
